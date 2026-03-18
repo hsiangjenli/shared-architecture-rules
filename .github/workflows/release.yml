@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*-SNAPSHOT"
+      - "*-RELEASE"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to create GitHub Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history needed for changelog generation
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven"
+
+      # Sync the POM version with the Git tag (e.g. 0.1.0-SNAPSHOT or 0.1.0-RELEASE)
+      - name: Set version from tag
+        run: mvn versions:set -DnewVersion=${{ github.ref_name }} -DgenerateBackupPoms=false
+
+      - name: Build JAR
+        run: mvn package -DskipTests
+
+      # Create a GitHub Release and attach the JAR.
+      # generate_release_notes uses GitHub's built-in changelog (groups PRs & commits
+      # since the previous tag). For conventional commits, swap this for git-cliff.
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/*.jar
+          generate_release_notes: true
+          prerelease: ${{ endsWith(github.ref_name, '-SNAPSHOT') }}
