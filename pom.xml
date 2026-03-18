@@ -24,4 +24,13 @@
         </plugins>
     </build>
 
+    <dependencies>
+        <!-- Source: https://mvnrepository.com/artifact/com.enofex/taikai -->
+        <dependency>
+            <groupId>com.enofex</groupId>
+            <artifactId>taikai</artifactId>
+            <version>1.60.0</version>
+        </dependency>
+    </dependencies>
+
 </project>
