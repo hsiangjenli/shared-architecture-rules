@@ -8,8 +8,13 @@ import com.enofex.taikai.test.TestConfigurer;
 
 public final class ArchitectureRules {
 
+  static int MAX_METHOD_PARAMETERS = 5;
+
   // TODO: Basic Java Rules
-  public static final Customizer<JavaConfigurer> BASE_JAVA_RULES = java -> {};
+  public static final Customizer<JavaConfigurer> BASE_JAVA_RULES =
+      java -> {
+        java.noUsageOfDeprecatedAPIs().methodsShouldNotExceedMaxParameters(MAX_METHOD_PARAMETERS);
+      };
 
   // TODO: Basic Spring Rules
   public static final Customizer<SpringConfigurer> BASE_SPRING = spring -> {};
